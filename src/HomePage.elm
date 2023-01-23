@@ -1,60 +1,107 @@
-module HomePage exposing (main)
+module HomePage exposing (..)
 
-import Browser 
+-- Press buttons to increment and decrement a counter.
+--
+-- Read how it works:
+--   https://guide.elm-lang.org/architecture/buttons.html
+--
+
+
+import Browser
 import Html exposing (..)
+import Html.Events exposing (..)
 import Html.Attributes exposing (..)
 
 
-element :
-    { init : flags -> ( model, Cmd msg )
-    , view : model -> Html msg
-    , update : msg -> model -> ( model, Cmd msg )
-    , subscriptions : model -> Sub msg
-    }
-    -> Program flags model msg
 
-main = 
-    Browser.element{init =0, update = update, view = view}
+-- MAIN
 
-type Msg = Increment | Decrement
 
+main =
+  Browser.sandbox { init = init, update = update, view = view }
+
+
+
+-- MODEL
+
+
+type alias Model =
+  { content : String
+  }
+
+
+init : Model
+init =
+  { content = "" }
+
+
+
+-- UPDATE
+
+
+type Msg
+  = Change String
+
+
+update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Increment ->
-      model + 1
+    Change newContent ->
+      { model | content = newContent }
 
-    Decrement ->
-      model - 1
 
-type alias Model = String
 
-view model = 
-         Html.form []
-    [ header
-    , definition
-    , game_body
+-- VIEW
+
+
+view : Model -> Html Msg
+view model = Html.form []
+    [ header,
+      definition,
+      if model.content == "bonjour" then 
+        div []
+          [ input [ placeholder "Insérez la réponse", value model.content, onInput Change ] []
+          , div [] [ text ("BRAVO !! c'est bien ça")]
+          ]
+      else if model.content == "" then 
+        div []
+          [ input [ placeholder "Insérez la réponse", value model.content, onInput Change ] []
+          , div [] [ text ("Veuillez insérer la réponse dans le champ ci-dessus")]
+          ]
+      else
+        div []
+          [ input [ placeholder "Insérez la réponse", value model.content, onInput Change ] []
+          , div [] [ text ("Ce n'est pas la bonne réponse")]
+          ]
     , footer
     ]
+  
 
 header = div [ class "top_banner" ]
         [ h1 [] [ text "Bienvenue à devine-mot !" ]
         , p []
-            [ text "Le but du jeu est de deviner le mot dont la définition est donnée ci-dessous (et tout ça en anglais). "],
+            [ text "Le but du jeu est de deviner le mot dont la définition est donnée ci-dessous. "],
              strong [] [ text "Bonne Chance !" ]
         ]
 
 definition = div [ class "definition" ]
         [ h1 [] [ text "C'est parti !" ], 
-        p [] [ text "C'est un mot qui veut dire bite (mais un autre)"],
-        a [] [ text "file:///home/eolia/Documents/ELM/index.html"]
+        p [] [ text "C'est un mot gentil pour saluer quelqu'un"]
         ]
 
-game_body = div []
-        [ input [ placeholder "le mot est : ", type_ "word" ]
-            []
+game_body = div [ class "game_body"]
+        [ 
+          p [] [ text "\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n"],
+          input [ placeholder "le mot est : ", type_ "word" ]
+            [],
+          button [] 
+            [ text "Submit" ],
+          p [] [ text "\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n"]
         ]
 
-footer = div []
-        [ button [] 
-            [ text "Submit" ]
-        ]
+footer = div [ class "footer"]
+        [
+          p [] [ text "Toutes les définitions sont tirées du site :"],
+          a [] [ text "https://dictionaryapi.dev/"]
+        ] 
+
