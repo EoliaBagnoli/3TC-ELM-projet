@@ -1,107 +1,140 @@
 module HomePage exposing (..)
 
--- Press buttons to increment and decrement a counter.
---
--- Read how it works:
---   https://guide.elm-lang.org/architecture/buttons.html
---
-
+-- ICI FAIRE LA REQUETE Http
 
 import Browser
 import Html exposing (..)
-import Html.Events exposing (..)
 import Html.Attributes exposing (..)
-
+import Html.Events exposing (..)
+import Http
+import Json.Decode exposing (..)
 
 
 -- MAIN
 
+main = Browser.element { init = init, update = update, subscriptions = subscriptions, view = view}
 
-main =
-  Browser.sandbox { init = init, update = update, view = view }
+-- MODEL 
 
+type Model = 
+    Failure | Loading | Success Dictionary
 
+type alias Dictionary = List Context
 
--- MODEL
+type alias Context = 
+    {
+        word : String,
+        meanings : List Meaning
+    }
 
+type alias Meaning = 
+    {
+        partOfSpeech : String,
+        definitions : List Definition
+    }
 
-type alias Model =
-  { content : String
-  }
-
-
-init : Model
-init =
-  { content = "" }
-
-
-
--- UPDATE
-
-
-type Msg
-  = Change String
-
-
-update : Msg -> Model -> Model
-update msg model =
-  case msg of
-    Change newContent ->
-      { model | content = newContent }
+type alias Definition = 
+    {
+        definition : String
+    }
 
 
+init : () -> (Model, Cmd Msg)
+init _ =
+  (
+   Loading,
+   getDictionary
+  )
 
--- VIEW
 
+-- UPDATE 
+
+type Msg = GotDictionary (Result Http.Error Dictionary)
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model = 
+    case msg of
+        GotDictionary result ->
+            case result of
+                Ok dictionary ->
+                    (Success dictionary, Cmd.none)
+                Err _ ->
+                    (Failure, Cmd.none)
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
 
 view : Model -> Html Msg
-view model = Html.form []
-    [ header,
-      definition,
-      if model.content == "bonjour" then 
-        div []
-          [ input [ placeholder "Insérez la réponse", value model.content, onInput Change ] []
-          , div [] [ text ("BRAVO !! c'est bien ça")]
-          ]
-      else if model.content == "" then 
-        div []
-          [ input [ placeholder "Insérez la réponse", value model.content, onInput Change ] []
-          , div [] [ text ("Veuillez insérer la réponse dans le champ ci-dessus")]
-          ]
-      else
-        div []
-          [ input [ placeholder "Insérez la réponse", value model.content, onInput Change ] []
-          , div [] [ text ("Ce n'est pas la bonne réponse")]
-          ]
-    , footer
+view model =
+  div []
+    [ h1 [] [ text "Hello Definition" ]
+    , viewDefinition model
     ]
-  
 
-header = div [ class "top_banner" ]
-        [ h1 [] [ text "Bienvenue à devine-mot !" ]
-        , p []
-            [ text "Le but du jeu est de deviner le mot dont la définition est donnée ci-dessous. "],
-             strong [] [ text "Bonne Chance !" ]
-        ]
 
-definition = div [ class "definition" ]
-        [ h1 [] [ text "C'est parti !" ], 
-        p [] [ text "C'est un mot gentil pour saluer quelqu'un"]
-        ]
+viewDefinition : Model -> Html Msg
+viewDefinition model =
+  case model of
+    Failure ->
+        text "I could not load your definition for some reason. "
 
-game_body = div [ class "game_body"]
-        [ 
-          p [] [ text "\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n"],
-          input [ placeholder "le mot est : ", type_ "word" ]
-            [],
-          button [] 
-            [ text "Submit" ],
-          p [] [ text "\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n"]
-        ]
+    Loading ->
+      text "Loading..."
 
-footer = div [ class "footer"]
+    Success dictionary -> 
+        print_word dictionary.affiche_word
+
+print_word : Model -> List(Html Msg) -> Html Msg
+print_word model word = 
+    div [] 
         [
-          p [] [ text "Toutes les définitions sont tirées du site :"],
-          a [] [ text "https://dictionaryapi.dev/"]
-        ] 
+           [ul [] word]
+        ]
 
+affiche_word : Dictionary -> List (Html Msg)
+affiche_word list = case list of
+    [] -> []
+    (x::xs) -> [li [] [text x.word]] ++ (affiche_word xs) 
+
+{- view : Model -> Html Msg
+view model = 
+    case model of 
+        Failure ->
+            text "There was a problem encoutered"
+        Loading ->
+            text "Loading"
+        Success dictionary -> 
+            text dictionary.meanings.partOfSpeech -}
+            
+
+
+
+getDictionary : Cmd Msg
+getDictionary =
+   Http.get
+      { url = "https://api.dictionaryapi.dev/api/v2/entries/en/hello"
+      , expect = Http.expectJson GotDictionary dictionaryDecoder
+      }
+
+dictionaryDecoder : Decoder (List Context)
+dictionaryDecoder = 
+    Json.Decode.list contextDecoder
+
+contextDecoder : Decoder Context
+contextDecoder = 
+    map2 Context
+        (field "word" string)
+        (field "meanings" <| Json.Decode.list meaningDecoder)
+
+meaningDecoder : Decoder Meaning
+meaningDecoder = 
+    map2 Meaning
+        (field "partOfSpeech" string)
+        (field "definitions" <| Json.Decode.list definitionDecoder)
+
+definitionDecoder : Decoder Definition
+definitionDecoder = 
+    Json.Decode.map Definition 
+        (field "definition" string)
