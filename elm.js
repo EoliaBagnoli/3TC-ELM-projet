@@ -5335,45 +5335,13 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$HomePage$Loading = {$: 'Loading'};
-var $author$project$HomePage$GotDictionary = function (a) {
-	return {$: 'GotDictionary', a: a};
-};
-var $author$project$HomePage$Context = F2(
-	function (word, meanings) {
-		return {meanings: meanings, word: word};
+var $author$project$HomePage$Model = F4(
+	function (http, json, dico, content) {
+		return {content: content, dico: dico, http: http, json: json};
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$HomePage$Meaning = F2(
-	function (partOfSpeech, definitions) {
-		return {definitions: definitions, partOfSpeech: partOfSpeech};
-	});
-var $author$project$HomePage$Definition = function (definition) {
-	return {definition: definition};
+var $author$project$HomePage$GotHttp = function (a) {
+	return {$: 'GotHttp', a: a};
 };
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$HomePage$definitionDecoder = A2(
-	$elm$json$Json$Decode$map,
-	$author$project$HomePage$Definition,
-	A2($elm$json$Json$Decode$field, 'definition', $elm$json$Json$Decode$string));
-var $author$project$HomePage$meaningDecoder = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$HomePage$Meaning,
-	A2($elm$json$Json$Decode$field, 'partOfSpeech', $elm$json$Json$Decode$string),
-	A2(
-		$elm$json$Json$Decode$field,
-		'definitions',
-		$elm$json$Json$Decode$list($author$project$HomePage$definitionDecoder)));
-var $author$project$HomePage$contextDecoder = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$HomePage$Context,
-	A2($elm$json$Json$Decode$field, 'word', $elm$json$Json$Decode$string),
-	A2(
-		$elm$json$Json$Decode$field,
-		'meanings',
-		$elm$json$Json$Decode$list($author$project$HomePage$meaningDecoder)));
-var $author$project$HomePage$dictionaryDecoder = $elm$json$Json$Decode$list($author$project$HomePage$contextDecoder);
-var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -5929,17 +5897,6 @@ var $elm$http$Http$expectStringResponse = F2(
 			$elm$core$Basics$identity,
 			A2($elm$core$Basics$composeR, toResult, toMsg));
 	});
-var $elm$core$Result$mapError = F2(
-	function (f, result) {
-		if (result.$ === 'Ok') {
-			var v = result.a;
-			return $elm$core$Result$Ok(v);
-		} else {
-			var e = result.a;
-			return $elm$core$Result$Err(
-				f(e));
-		}
-	});
 var $elm$http$Http$BadBody = function (a) {
 	return {$: 'BadBody', a: a};
 };
@@ -5951,6 +5908,17 @@ var $elm$http$Http$BadUrl = function (a) {
 };
 var $elm$http$Http$NetworkError = {$: 'NetworkError'};
 var $elm$http$Http$Timeout = {$: 'Timeout'};
+var $elm$core$Result$mapError = F2(
+	function (f, result) {
+		if (result.$ === 'Ok') {
+			var v = result.a;
+			return $elm$core$Result$Ok(v);
+		} else {
+			var e = result.a;
+			return $elm$core$Result$Err(
+				f(e));
+		}
+	});
 var $elm$http$Http$resolve = F2(
 	function (toResult, response) {
 		switch (response.$) {
@@ -5974,19 +5942,12 @@ var $elm$http$Http$resolve = F2(
 					toResult(body));
 		}
 	});
-var $elm$http$Http$expectJson = F2(
-	function (toMsg, decoder) {
-		return A2(
-			$elm$http$Http$expectStringResponse,
-			toMsg,
-			$elm$http$Http$resolve(
-				function (string) {
-					return A2(
-						$elm$core$Result$mapError,
-						$elm$json$Json$Decode$errorToString,
-						A2($elm$json$Json$Decode$decodeString, decoder, string));
-				}));
-	});
+var $elm$http$Http$expectString = function (toMsg) {
+	return A2(
+		$elm$http$Http$expectStringResponse,
+		toMsg,
+		$elm$http$Http$resolve($elm$core$Result$Ok));
+};
 var $elm$http$Http$emptyBody = _Http_emptyBody;
 var $elm$http$Http$Request = function (a) {
 	return {$: 'Request', a: a};
@@ -6160,13 +6121,15 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$HomePage$getDictionary = $elm$http$Http$get(
+var $author$project$HomePage$getHttp = $elm$http$Http$get(
 	{
-		expect: A2($elm$http$Http$expectJson, $author$project$HomePage$GotDictionary, $author$project$HomePage$dictionaryDecoder),
+		expect: $elm$http$Http$expectString($author$project$HomePage$GotHttp),
 		url: 'https://api.dictionaryapi.dev/api/v2/entries/en/hello'
 	});
 var $author$project$HomePage$init = function (_v0) {
-	return _Utils_Tuple2($author$project$HomePage$Loading, $author$project$HomePage$getDictionary);
+	return _Utils_Tuple2(
+		A4($author$project$HomePage$Model, $author$project$HomePage$Loading, $author$project$HomePage$Loading, _List_Nil, ''),
+		$author$project$HomePage$getHttp);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -6177,32 +6140,461 @@ var $author$project$HomePage$Failure = {$: 'Failure'};
 var $author$project$HomePage$Success = function (a) {
 	return {$: 'Success', a: a};
 };
+var $author$project$HomePage$GotDictionary = function (a) {
+	return {$: 'GotDictionary', a: a};
+};
+var $author$project$HomePage$Context = F2(
+	function (word, meanings) {
+		return {meanings: meanings, word: word};
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$list = _Json_decodeList;
+var $author$project$HomePage$Meaning = F2(
+	function (partOfSpeech, definitions) {
+		return {definitions: definitions, partOfSpeech: partOfSpeech};
+	});
+var $author$project$HomePage$Definition = function (definition) {
+	return {definition: definition};
+};
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$HomePage$definitionDecoder = A2(
+	$elm$json$Json$Decode$map,
+	$author$project$HomePage$Definition,
+	A2($elm$json$Json$Decode$field, 'definition', $elm$json$Json$Decode$string));
+var $author$project$HomePage$meaningDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$HomePage$Meaning,
+	A2($elm$json$Json$Decode$field, 'partOfSpeech', $elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$field,
+		'definitions',
+		$elm$json$Json$Decode$list($author$project$HomePage$definitionDecoder)));
+var $author$project$HomePage$contextDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$HomePage$Context,
+	A2($elm$json$Json$Decode$field, 'word', $elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$field,
+		'meanings',
+		$elm$json$Json$Decode$list($author$project$HomePage$meaningDecoder)));
+var $author$project$HomePage$dictionaryDecoder = $elm$json$Json$Decode$list($author$project$HomePage$contextDecoder);
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
+var $elm$http$Http$expectJson = F2(
+	function (toMsg, decoder) {
+		return A2(
+			$elm$http$Http$expectStringResponse,
+			toMsg,
+			$elm$http$Http$resolve(
+				function (string) {
+					return A2(
+						$elm$core$Result$mapError,
+						$elm$json$Json$Decode$errorToString,
+						A2($elm$json$Json$Decode$decodeString, decoder, string));
+				}));
+	});
+var $author$project$HomePage$getDictionary = $elm$http$Http$get(
+	{
+		expect: A2($elm$http$Http$expectJson, $author$project$HomePage$GotDictionary, $author$project$HomePage$dictionaryDecoder),
+		url: 'https://api.dictionaryapi.dev/api/v2/entries/en/hello'
+	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$HomePage$update = F2(
 	function (msg, model) {
-		var result = msg.a;
-		if (result.$ === 'Ok') {
-			var dictionary = result.a;
-			return _Utils_Tuple2(
-				$author$project$HomePage$Success(dictionary),
-				$elm$core$Platform$Cmd$none);
-		} else {
-			return _Utils_Tuple2($author$project$HomePage$Failure, $elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'GotDictionary':
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var dictionary = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								dico: dictionary,
+								json: $author$project$HomePage$Success('')
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{json: $author$project$HomePage$Failure}),
+						$elm$core$Platform$Cmd$none);
+				}
+			case 'GotHttp':
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var hello = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								http: $author$project$HomePage$Success(hello)
+							}),
+						$author$project$HomePage$getDictionary);
+				} else {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{http: $author$project$HomePage$Failure}),
+						$elm$core$Platform$Cmd$none);
+				}
+			default:
+				var newContent = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{content: newContent}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$HomePage$Change = function (a) {
+	return {$: 'Change', a: a};
+};
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$HomePage$view = function (model) {
-	switch (model.$) {
-		case 'Failure':
-			return $elm$html$Html$text('There was a problem encoutered');
-		case 'Loading':
-			return $elm$html$Html$text('Loading');
-		default:
-			var dictionary = model.a;
-			return $elm$html$Html$text('ENFOIRE DE TES MORTS DE MERDE ');
+var $author$project$HomePage$footer = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('footer')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$p,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Toutes les définitions sont tirées du site :')
+				])),
+			A2(
+			$elm$html$Html$a,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('https://dictionaryapi.dev/')
+				]))
+		]));
+var $elm$html$Html$form = _VirtualDom_node('form');
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$html$Html$strong = _VirtualDom_node('strong');
+var $author$project$HomePage$header = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('top_banner')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$h1,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Bienvenue à devine-mot !')
+				])),
+			A2(
+			$elm$html$Html$p,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Le but du jeu est de deviner le mot dont la définition est donnée ci-dessous. ')
+				])),
+			A2(
+			$elm$html$Html$strong,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Bonne Chance !')
+				]))
+		]));
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $author$project$HomePage$overlay = F2(
+	function (model, txt) {
+		return A2($elm$html$Html$div, _List_Nil, txt);
+	});
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$html$Html$ol = _VirtualDom_node('ol');
+var $author$project$HomePage$textDef = function (def) {
+	if (!def.b) {
+		return _List_Nil;
+	} else {
+		var wordToFind = def.a;
+		var xs = def.b;
+		return _Utils_ap(
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(wordToFind.definition)
+						]))
+				]),
+			$author$project$HomePage$textDef(xs));
 	}
+};
+var $author$project$HomePage$textWordMeaning = function (meanings) {
+	if (!meanings.b) {
+		return _List_Nil;
+	} else {
+		var wordToFind = meanings.a;
+		var xs = meanings.b;
+		return _Utils_ap(
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(wordToFind.partOfSpeech)
+						]))
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ol,
+						_List_Nil,
+						$author$project$HomePage$textDef(wordToFind.definitions))
+					]),
+				$author$project$HomePage$textWordMeaning(xs)));
+	}
+};
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$HomePage$textDatas = function (datas) {
+	if (!datas.b) {
+		return _List_Nil;
+	} else {
+		var wordToFind = datas.a;
+		var xs = datas.b;
+		return _Utils_ap(
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$li,
+					_List_Nil,
+					_Utils_ap(
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Definitions')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$ul,
+								_List_Nil,
+								$author$project$HomePage$textWordMeaning(wordToFind.meanings))
+							])))
+				]),
+			$author$project$HomePage$textDatas(xs));
+	}
+};
+var $author$project$HomePage$viewWord = function (model) {
+	var _v0 = model.http;
+	switch (_v0.$) {
+		case 'Failure':
+			return $elm$html$Html$text('Error while loading the words :\'/');
+		case 'Loading':
+			return $elm$html$Html$text('Fetching the http datas...');
+		default:
+			var good = _v0.a;
+			return A2(
+				$author$project$HomePage$overlay,
+				model,
+				function () {
+					var _v1 = model.json;
+					switch (_v1.$) {
+						case 'Success':
+							var veryGood = _v1.a;
+							return $author$project$HomePage$textDatas(model.dico);
+						case 'Loading':
+							return _List_fromArray(
+								[
+									$elm$html$Html$text('Fetching the json datas...')
+								]);
+						default:
+							return _List_fromArray(
+								[
+									$elm$html$Html$text('Error while loading the words :\'/')
+								]);
+					}
+				}());
+	}
+};
+var $author$project$HomePage$view = function (model) {
+	return A2(
+		$elm$html$Html$form,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$author$project$HomePage$header,
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h1,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Here is the definition :')
+							])),
+						$author$project$HomePage$viewWord(model)
+					])),
+				A2(
+				$elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('\n ')
+					])),
+				(model.content === 'hello') ? A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$placeholder('Insérez la réponse'),
+								$elm$html$Html$Events$onInput($author$project$HomePage$Change)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('\n ')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$h1,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('BRAVO !! c\'est bien ça')
+									]))
+							]))
+					])) : ((model.content === '') ? A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$placeholder('Insérez la réponse'),
+								$elm$html$Html$Events$onInput($author$project$HomePage$Change)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('\n ')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Veuillez insérer la réponse dans le champ ci-dessus')
+							]))
+					])) : A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$placeholder('Insérez la réponse'),
+								$elm$html$Html$Events$onInput($author$project$HomePage$Change)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('\n ')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Ce n\'est pas la bonne réponse')
+							]))
+					]))),
+				A2(
+				$elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('\n ')
+					])),
+				$author$project$HomePage$footer
+			]));
 };
 var $author$project$HomePage$main = $elm$browser$Browser$element(
 	{init: $author$project$HomePage$init, subscriptions: $author$project$HomePage$subscriptions, update: $author$project$HomePage$update, view: $author$project$HomePage$view});

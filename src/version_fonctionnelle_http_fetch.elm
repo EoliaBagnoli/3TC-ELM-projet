@@ -10,8 +10,6 @@ import Http
 import Json.Decode exposing (..)
 
 
-
-
 -- MAIN
 
 main = Browser.element { init = init, update = update, subscriptions = subscriptions, view = view}
@@ -25,7 +23,6 @@ type alias Model =
         http : State 
         ,json : State 
         ,dico : Dictionary
-        ,content : String
     }
 
 type alias Dictionary = List Context
@@ -51,14 +48,14 @@ type alias Definition =
 init : () -> (Model, Cmd Msg)
 init _ =
   (
-   Model Loading Loading [] "",
+   Model Loading Loading [],
    getHttp
   )
 
 
 -- UPDATE 
 
-type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) 
+type Msg = GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
@@ -75,8 +72,6 @@ update msg model =
                     ({model | http = Success hello}, getDictionary)
                 Err _ ->
                     ({model | http = Failure}, Cmd.none)
-        Change newContent ->
-            ({ model | content = newContent }, Cmd.none)
 
 
 subscriptions : Model -> Sub Msg
@@ -84,35 +79,10 @@ subscriptions model =
   Sub.none
 
 view : Model -> Html Msg
-view model = Html.form []
-    [ header,
-
-    div []
-    [ h1 [] [ text "Here is the definition :" ]
+view model =
+  div []
+    [ h1 [] [ text "Hello Definition" ]
     , viewWord model
-    ], 
-
-    p [] [ text "\n "],
-      if model.content == "hello" then 
-        div []
-          [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
-            p [] [ text "\n "]
-          , div [] [ h1 [ ]  [text ("BRAVO !! c'est bien ça")]]
-          ]
-      else if model.content == "" then 
-        div []
-          [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
-        p [] [ text "\n "]
-          , div [] [ text ("Veuillez insérer la réponse dans le champ ci-dessus")]
-          ]
-      else
-        div []
-          [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
-            p [] [ text "\n "]
-          , div []  [text ("Ce n'est pas la bonne réponse")]
-          ],
-    p [] [ text "\n "]
-    , footer
     ]
 
 viewWord : Model -> Html Msg
@@ -126,39 +96,13 @@ viewWord model =
         Loading -> [text "Fetching the json datas..."]
         Failure -> [text ("Error while loading the words :'/")] )
             
-header = div [ class "top_banner" ]
-        [ h1 [] [ text "Bienvenue à devine-mot !" ]
-        , p []
-            [ text "Le but du jeu est de deviner le mot dont la définition est donnée ci-dessous. "],
-             strong [] [ text "Bonne Chance !" ]
-        ]
 
-definition = div [ class "definition" ]
-        [ h1 [] [ text "C'est parti !" ], 
-        p [] [ text "C'est un mot gentil pour saluer"]
-        ]
-
-game_body = div [ class "game_body"]
-        [ 
-          p [] [ text "\n "],
-          input [ placeholder "le mot est : ", type_ "word" ]
-            [],
-          button [] 
-            [ text "Submit" ],
-          p [] [ text "\n "]
-        ]
-
-footer = div [ class "footer"]
-        [
-          p [] [ text "Toutes les définitions sont tirées du site :"],
-          a [] [ text "https://dictionaryapi.dev/"]
-        ] 
 
 
 getDictionary : Cmd Msg
 getDictionary =
     Http.get
-      { url = "https://api.dictionaryapi.dev/api/v2/entries/en/hello"
+      { url = "https://api.dictionaryapi.dev/api/v2/entries/en/cat"
       , expect = Http.expectJson GotDictionary dictionaryDecoder
       }
 
