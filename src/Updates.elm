@@ -29,3 +29,13 @@ updatePage msg model =
                       (model, Cmd.none)
                   Just word_at_index -> 
                       ({ model | mot_cherche = word_at_index}, Utils.getDictionary model)
+
+        GetAnswer ->
+            if model.show_answer == False then 
+                ({model | show_answer = True}, Cmd.none)
+            else 
+                ({model | show_answer = False}, Cmd.none)
+
+        Abandon ->
+            ({model | http = Loading }, getHttp)
+

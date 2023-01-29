@@ -15,6 +15,7 @@ type alias Model =
         ,content : String
         ,mot_cherche : String
         ,all_the_words : List String
+        ,show_answer : Bool
     }
 
 type alias Dictionary = List Context
@@ -40,12 +41,11 @@ type alias Definition =
 init : () -> (Model, Cmd Msg)
 init _ =
   (
-   Model Loading Loading [] "" "" [],
+   Model Loading Loading [] "" "" [] False,
    getHttp
   )
 
-
-type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) | Word_number Int
+type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) | Word_number Int | GetAnswer | Abandon
 
 toString : Http.Error -> String 
 toString erreur = 
