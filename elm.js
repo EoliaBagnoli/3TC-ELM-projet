@@ -5417,12 +5417,12 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$HomePage$Loading = {$: 'Loading'};
-var $author$project$HomePage$Model = F6(
+var $author$project$Utils$Loading = {$: 'Loading'};
+var $author$project$Utils$Model = F6(
 	function (http, json, dico, content, mot_cherche, all_the_words) {
 		return {all_the_words: all_the_words, content: content, dico: dico, http: http, json: json, mot_cherche: mot_cherche};
 	});
-var $author$project$HomePage$GotHttp = function (a) {
+var $author$project$Utils$GotHttp = function (a) {
 	return {$: 'GotHttp', a: a};
 };
 var $elm$http$Http$BadStatus_ = F2(
@@ -6204,28 +6204,28 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$HomePage$getHttp = $elm$http$Http$get(
+var $author$project$Utils$getHttp = $elm$http$Http$get(
 	{
-		expect: $elm$http$Http$expectString($author$project$HomePage$GotHttp),
+		expect: $elm$http$Http$expectString($author$project$Utils$GotHttp),
 		url: 'http://localhost:5016/words.txt'
 	});
-var $author$project$HomePage$init = function (_v0) {
+var $author$project$Utils$init = function (_v0) {
 	return _Utils_Tuple2(
-		A6($author$project$HomePage$Model, $author$project$HomePage$Loading, $author$project$HomePage$Loading, _List_Nil, '', '', _List_Nil),
-		$author$project$HomePage$getHttp);
+		A6($author$project$Utils$Model, $author$project$Utils$Loading, $author$project$Utils$Loading, _List_Nil, '', '', _List_Nil),
+		$author$project$Utils$getHttp);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$HomePage$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$HomePage$Failure = function (a) {
+var $author$project$Utils$Failure = function (a) {
 	return {$: 'Failure', a: a};
 };
-var $author$project$HomePage$Success = function (a) {
+var $author$project$Utils$Success = function (a) {
 	return {$: 'Success', a: a};
 };
-var $author$project$HomePage$Word_number = function (a) {
+var $author$project$Utils$Word_number = function (a) {
 	return {$: 'Word_number', a: a};
 };
 var $elm$random$Random$Generate = function (a) {
@@ -6335,44 +6335,44 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
-var $author$project$HomePage$GotDictionary = function (a) {
+var $author$project$Utils$GotDictionary = function (a) {
 	return {$: 'GotDictionary', a: a};
 };
-var $author$project$HomePage$Context = F2(
+var $author$project$Utils$Context = F2(
 	function (word, meanings) {
 		return {meanings: meanings, word: word};
 	});
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$HomePage$Meaning = F2(
+var $author$project$Utils$Meaning = F2(
 	function (partOfSpeech, definitions) {
 		return {definitions: definitions, partOfSpeech: partOfSpeech};
 	});
-var $author$project$HomePage$Definition = function (definition) {
+var $author$project$Utils$Definition = function (definition) {
 	return {definition: definition};
 };
 var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$HomePage$definitionDecoder = A2(
+var $author$project$Utils$definitionDecoder = A2(
 	$elm$json$Json$Decode$map,
-	$author$project$HomePage$Definition,
+	$author$project$Utils$Definition,
 	A2($elm$json$Json$Decode$field, 'definition', $elm$json$Json$Decode$string));
-var $author$project$HomePage$meaningDecoder = A3(
+var $author$project$Utils$meaningDecoder = A3(
 	$elm$json$Json$Decode$map2,
-	$author$project$HomePage$Meaning,
+	$author$project$Utils$Meaning,
 	A2($elm$json$Json$Decode$field, 'partOfSpeech', $elm$json$Json$Decode$string),
 	A2(
 		$elm$json$Json$Decode$field,
 		'definitions',
-		$elm$json$Json$Decode$list($author$project$HomePage$definitionDecoder)));
-var $author$project$HomePage$contextDecoder = A3(
+		$elm$json$Json$Decode$list($author$project$Utils$definitionDecoder)));
+var $author$project$Utils$contextDecoder = A3(
 	$elm$json$Json$Decode$map2,
-	$author$project$HomePage$Context,
+	$author$project$Utils$Context,
 	A2($elm$json$Json$Decode$field, 'word', $elm$json$Json$Decode$string),
 	A2(
 		$elm$json$Json$Decode$field,
 		'meanings',
-		$elm$json$Json$Decode$list($author$project$HomePage$meaningDecoder)));
-var $author$project$HomePage$dictionaryDecoder = $elm$json$Json$Decode$list($author$project$HomePage$contextDecoder);
+		$elm$json$Json$Decode$list($author$project$Utils$meaningDecoder)));
+var $author$project$Utils$dictionaryDecoder = $elm$json$Json$Decode$list($author$project$Utils$contextDecoder);
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$expectJson = F2(
 	function (toMsg, decoder) {
@@ -6387,14 +6387,14 @@ var $elm$http$Http$expectJson = F2(
 						A2($elm$json$Json$Decode$decodeString, decoder, string));
 				}));
 	});
-var $author$project$HomePage$urlDef = function (model) {
+var $author$project$Utils$urlDef = function (model) {
 	return 'https://api.dictionaryapi.dev/api/v2/entries/en/hello';
 };
-var $author$project$HomePage$getDictionary = function (model) {
+var $author$project$Utils$getDictionary = function (model) {
 	return $elm$http$Http$get(
 		{
-			expect: A2($elm$http$Http$expectJson, $author$project$HomePage$GotDictionary, $author$project$HomePage$dictionaryDecoder),
-			url: $author$project$HomePage$urlDef(model)
+			expect: A2($elm$http$Http$expectJson, $author$project$Utils$GotDictionary, $author$project$Utils$dictionaryDecoder),
+			url: $author$project$Utils$urlDef(model)
 		});
 };
 var $elm$core$List$drop = F2(
@@ -6428,7 +6428,7 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$HomePage$getElementAtIndex = F2(
+var $author$project$Utils$getElementAtIndex = F2(
 	function (list, index) {
 		return ((index < 0) || (_Utils_cmp(
 			index,
@@ -6479,7 +6479,7 @@ var $elm$random$Random$int = F2(
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$HomePage$toString = function (erreur) {
+var $author$project$Utils$toString = function (erreur) {
 	switch (erreur.$) {
 		case 'BadUrl':
 			var err = erreur.a;
@@ -6496,7 +6496,7 @@ var $author$project$HomePage$toString = function (erreur) {
 			return 'BadBody' + err;
 	}
 };
-var $author$project$HomePage$update = F2(
+var $author$project$Updates$updatePage = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'GotDictionary':
@@ -6508,7 +6508,7 @@ var $author$project$HomePage$update = F2(
 							model,
 							{
 								dico: dictionary,
-								json: $author$project$HomePage$Success('')
+								json: $author$project$Utils$Success('')
 							}),
 						$elm$core$Platform$Cmd$none);
 				} else {
@@ -6517,8 +6517,8 @@ var $author$project$HomePage$update = F2(
 						_Utils_update(
 							model,
 							{
-								json: $author$project$HomePage$Failure(
-									$author$project$HomePage$toString(error))
+								json: $author$project$Utils$Failure(
+									$author$project$Utils$toString(error))
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
@@ -6531,11 +6531,11 @@ var $author$project$HomePage$update = F2(
 							model,
 							{
 								all_the_words: A2($elm$core$String$split, ' ', words_txt),
-								http: $author$project$HomePage$Success('')
+								http: $author$project$Utils$Success('')
 							}),
 						A2(
 							$elm$random$Random$generate,
-							$author$project$HomePage$Word_number,
+							$author$project$Utils$Word_number,
 							A2($elm$random$Random$int, 1, 1000)));
 				} else {
 					var error = result.a;
@@ -6543,8 +6543,8 @@ var $author$project$HomePage$update = F2(
 						_Utils_update(
 							model,
 							{
-								http: $author$project$HomePage$Failure(
-									$author$project$HomePage$toString(error))
+								http: $author$project$Utils$Failure(
+									$author$project$Utils$toString(error))
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
@@ -6557,7 +6557,7 @@ var $author$project$HomePage$update = F2(
 					$elm$core$Platform$Cmd$none);
 			default:
 				var index = msg.a;
-				var _v3 = A2($author$project$HomePage$getElementAtIndex, model.all_the_words, index);
+				var _v3 = A2($author$project$Utils$getElementAtIndex, model.all_the_words, index);
 				if (_v3.$ === 'Nothing') {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				} else {
@@ -6566,14 +6566,18 @@ var $author$project$HomePage$update = F2(
 						_Utils_update(
 							model,
 							{mot_cherche: word_at_index}),
-						$author$project$HomePage$getDictionary(model));
+						$author$project$Utils$getDictionary(model));
 				}
 		}
 	});
-var $author$project$HomePage$Change = function (a) {
+var $author$project$HomePage$update = F2(
+	function (msg, model) {
+		return A2($author$project$Updates$updatePage, msg, model);
+	});
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Utils$Change = function (a) {
 	return {$: 'Change', a: a};
 };
-var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -6587,7 +6591,7 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$HomePage$footer = A2(
+var $author$project$View$footer = A2(
 	$elm$html$Html$div,
 	_List_fromArray(
 		[
@@ -6613,7 +6617,7 @@ var $author$project$HomePage$footer = A2(
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$strong = _VirtualDom_node('strong');
-var $author$project$HomePage$header = A2(
+var $author$project$View$header = A2(
 	$elm$html$Html$div,
 	_List_fromArray(
 		[
@@ -6677,13 +6681,13 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
 var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $author$project$HomePage$overlay = F2(
+var $author$project$Utils$overlay = F2(
 	function (model, txt) {
 		return A2($elm$html$Html$div, _List_Nil, txt);
 	});
 var $elm$html$Html$li = _VirtualDom_node('li');
 var $elm$html$Html$ol = _VirtualDom_node('ol');
-var $author$project$HomePage$textDef = function (def) {
+var $author$project$Utils$textDef = function (def) {
 	if (!def.b) {
 		return _List_Nil;
 	} else {
@@ -6700,10 +6704,10 @@ var $author$project$HomePage$textDef = function (def) {
 							$elm$html$Html$text(wordToFind.definition)
 						]))
 				]),
-			$author$project$HomePage$textDef(xs));
+			$author$project$Utils$textDef(xs));
 	}
 };
-var $author$project$HomePage$textWordMeaning = function (meanings) {
+var $author$project$Utils$textWordMeaning = function (meanings) {
 	if (!meanings.b) {
 		return _List_Nil;
 	} else {
@@ -6726,13 +6730,13 @@ var $author$project$HomePage$textWordMeaning = function (meanings) {
 						A2(
 						$elm$html$Html$ol,
 						_List_Nil,
-						$author$project$HomePage$textDef(wordToFind.definitions))
+						$author$project$Utils$textDef(wordToFind.definitions))
 					]),
-				$author$project$HomePage$textWordMeaning(xs)));
+				$author$project$Utils$textWordMeaning(xs)));
 	}
 };
 var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$HomePage$textDatas = function (datas) {
+var $author$project$Utils$textDatas = function (datas) {
 	if (!datas.b) {
 		return _List_Nil;
 	} else {
@@ -6754,13 +6758,13 @@ var $author$project$HomePage$textDatas = function (datas) {
 								A2(
 								$elm$html$Html$ul,
 								_List_Nil,
-								$author$project$HomePage$textWordMeaning(wordToFind.meanings))
+								$author$project$Utils$textWordMeaning(wordToFind.meanings))
 							])))
 				]),
-			$author$project$HomePage$textDatas(xs));
+			$author$project$Utils$textDatas(xs));
 	}
 };
-var $author$project$HomePage$viewWord = function (model) {
+var $author$project$View$viewWord = function (model) {
 	var _v0 = model.http;
 	switch (_v0.$) {
 		case 'Failure':
@@ -6771,14 +6775,14 @@ var $author$project$HomePage$viewWord = function (model) {
 		default:
 			var good = _v0.a;
 			return A2(
-				$author$project$HomePage$overlay,
+				$author$project$Utils$overlay,
 				model,
 				function () {
 					var _v1 = model.json;
 					switch (_v1.$) {
 						case 'Success':
 							var veryGood = _v1.a;
-							return $author$project$HomePage$textDatas(model.dico);
+							return $author$project$Utils$textDatas(model.dico);
 						case 'Loading':
 							return _List_fromArray(
 								[
@@ -6794,13 +6798,13 @@ var $author$project$HomePage$viewWord = function (model) {
 				}());
 	}
 };
-var $author$project$HomePage$view = function (model) {
+var $author$project$View$viewPage = function (model) {
 	return A2(
 		$elm$html$Html$form,
 		_List_Nil,
 		_List_fromArray(
 			[
-				$author$project$HomePage$header,
+				$author$project$View$header,
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
@@ -6812,9 +6816,9 @@ var $author$project$HomePage$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text(
-								$author$project$HomePage$urlDef(model))
+								$author$project$Utils$urlDef(model))
 							])),
-						$author$project$HomePage$viewWord(model)
+						$author$project$View$viewWord(model)
 					])),
 				A2(
 				$elm$html$Html$p,
@@ -6833,7 +6837,7 @@ var $author$project$HomePage$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Attributes$placeholder('Insérez la réponse'),
-								$elm$html$Html$Events$onInput($author$project$HomePage$Change)
+								$elm$html$Html$Events$onInput($author$project$Utils$Change)
 							]),
 						_List_Nil),
 						A2(
@@ -6866,7 +6870,7 @@ var $author$project$HomePage$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Attributes$placeholder('Insérez la réponse'),
-								$elm$html$Html$Events$onInput($author$project$HomePage$Change)
+								$elm$html$Html$Events$onInput($author$project$Utils$Change)
 							]),
 						_List_Nil),
 						A2(
@@ -6893,7 +6897,7 @@ var $author$project$HomePage$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Attributes$placeholder('Insérez la réponse'),
-								$elm$html$Html$Events$onInput($author$project$HomePage$Change)
+								$elm$html$Html$Events$onInput($author$project$Utils$Change)
 							]),
 						_List_Nil),
 						A2(
@@ -6918,10 +6922,19 @@ var $author$project$HomePage$view = function (model) {
 					[
 						$elm$html$Html$text('\n ')
 					])),
-				$author$project$HomePage$footer
+				$author$project$View$footer
+			]));
+};
+var $author$project$HomePage$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$author$project$View$viewPage(model)
 			]));
 };
 var $author$project$HomePage$main = $elm$browser$Browser$element(
-	{init: $author$project$HomePage$init, subscriptions: $author$project$HomePage$subscriptions, update: $author$project$HomePage$update, view: $author$project$HomePage$view});
+	{init: $author$project$Utils$init, subscriptions: $author$project$HomePage$subscriptions, update: $author$project$HomePage$update, view: $author$project$HomePage$view});
 _Platform_export({'HomePage':{'init':$author$project$HomePage$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
