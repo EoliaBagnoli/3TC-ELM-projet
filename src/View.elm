@@ -16,12 +16,12 @@ viewPage model = Html.form []
 
 viewDefinition : Model -> Html Msg
 viewDefinition model =
-  case model.http of
+  case model.http_state of
     Utils.Failure error -> text ("Error while loading the words : "  ++ error)
     Utils.Loading -> text "Fetching the http datas..."
     Utils.Success -> Utils.overlay model (
-      case model.json of
-        Utils.Success -> Utils.textDatas model.dico
+      case model.json_state of
+        Utils.Success -> Utils.afficheDico model.dico
         Utils.Loading -> [text "Fetching the json datas..."]
         Utils.Failure error -> [text ("Error while loading the defintion : "  ++ error)] )
             
@@ -42,13 +42,13 @@ definition model = div [class "definition"]
     ]
 
 game_body model = div [class "game_body"] [p [] [ text "\n "],
-      if model.content == model.mot_cherche then 
+      if model.user_input == model.mot_cherche then 
         div [style "text-align" "center", style "padding" "20px"]
           [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
             p [] [ text "\n "]
           , div [] [ h1 [ ]  [text ("BRAVO !! c'est bien ça")]]
           ]
-      else if model.content == "" then 
+      else if model.user_input == "" then 
         div [style "text-align" "center", style "padding" "20px"]
           [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
         p [] [ text "\n "]

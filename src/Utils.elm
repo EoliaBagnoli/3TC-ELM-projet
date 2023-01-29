@@ -9,10 +9,10 @@ type State = Failure String | Loading | Success
 
 type alias Model = 
     {
-        http : State 
-        ,json : State 
+        http_state : State 
+        ,json_state : State 
         ,dico : Dictionary
-        ,content : String
+        ,user_input : String
         ,mot_cherche : String
         ,all_the_words : List String
         ,show_answer : Bool
@@ -42,7 +42,7 @@ init : () -> (Model, Cmd Msg)
 init _ =
   (
    Model Loading Loading [] "" "" [] False,
-   getHttp
+   getWord
   )
 
 type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) | Word_number Int | GetAnswer | Abandon
@@ -72,11 +72,11 @@ getDictionary model =
       }
 
 urlDef : Model -> String
-urlDef model = ("https://api.dictionaryapi.dev/api/v2/entries/en/" ++ model.mot_cherche)
+urlDef model = ("https://api.dictionaryapi.dev/api/v2/entries/en/hello")
 
 
-getHttp : Cmd Msg
-getHttp =
+getWord : Cmd Msg
+getWord =
     Http.get
       { url = "http://localhost:5016/words.txt"
       , expect = Http.expectString GotHttp
@@ -105,23 +105,23 @@ definitionDecoder =
 
 
 
-textDatas : (List Context) -> List (Html Msg)
-textDatas datas =
-  case datas of
+afficheDico : (List Context) -> List (Html Msg)
+afficheDico dico =
+  case dico of
     [] -> []
-    (wordToFind :: xs) -> [li [] ([text "Definitions"] ++ [ul [] (textWordMeaning wordToFind.meanings)])] ++ (textDatas xs)
+    (wordToFind :: xs) -> [li [] ([text "Definitions"] ++ [ul [] (afficheWordMeaning wordToFind.meanings)])] ++ (afficheDico xs)
     
-textWordMeaning : List Meaning -> List (Html Msg)
-textWordMeaning meanings =
+afficheWordMeaning : List Meaning -> List (Html Msg)
+afficheWordMeaning meanings =
   case meanings of
     [] -> []
-    (wordToFind :: xs) -> [li [] [text wordToFind.partOfSpeech]] ++ [ol [] (textDef wordToFind.definitions)] ++ (textWordMeaning xs)
+    (wordToFind :: xs) -> [li [] [text wordToFind.partOfSpeech]] ++ [ol [] (afficheDefinition wordToFind.definitions)] ++ (afficheWordMeaning xs)
     
-textDef : List Definition -> List (Html Msg)
-textDef def =
+afficheDefinition : List Definition -> List (Html Msg)
+afficheDefinition def =
   case def of
     [] -> []
-    (wordToFind :: xs) -> [li [] [text wordToFind.definition]] ++ (textDef xs)  
+    (wordToFind :: xs) -> [li [] [text wordToFind.definition]] ++ (afficheDefinition xs)  
     
 overlay : Model -> List (Html Msg) -> Html Msg
 overlay model txt =

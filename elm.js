@@ -5419,8 +5419,8 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Utils$Loading = {$: 'Loading'};
 var $author$project$Utils$Model = F7(
-	function (http, json, dico, content, mot_cherche, all_the_words, show_answer) {
-		return {all_the_words: all_the_words, content: content, dico: dico, http: http, json: json, mot_cherche: mot_cherche, show_answer: show_answer};
+	function (http_state, json_state, dico, user_input, mot_cherche, all_the_words, show_answer) {
+		return {all_the_words: all_the_words, dico: dico, http_state: http_state, json_state: json_state, mot_cherche: mot_cherche, show_answer: show_answer, user_input: user_input};
 	});
 var $author$project$Utils$GotHttp = function (a) {
 	return {$: 'GotHttp', a: a};
@@ -6204,7 +6204,7 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$Utils$getHttp = $elm$http$Http$get(
+var $author$project$Utils$getWord = $elm$http$Http$get(
 	{
 		expect: $elm$http$Http$expectString($author$project$Utils$GotHttp),
 		url: 'http://localhost:5016/words.txt'
@@ -6212,7 +6212,7 @@ var $author$project$Utils$getHttp = $elm$http$Http$get(
 var $author$project$Utils$init = function (_v0) {
 	return _Utils_Tuple2(
 		A7($author$project$Utils$Model, $author$project$Utils$Loading, $author$project$Utils$Loading, _List_Nil, '', '', _List_Nil, false),
-		$author$project$Utils$getHttp);
+		$author$project$Utils$getWord);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -6386,7 +6386,7 @@ var $elm$http$Http$expectJson = F2(
 				}));
 	});
 var $author$project$Utils$urlDef = function (model) {
-	return 'https://api.dictionaryapi.dev/api/v2/entries/en/' + model.mot_cherche;
+	return 'https://api.dictionaryapi.dev/api/v2/entries/en/hello';
 };
 var $author$project$Utils$getDictionary = function (model) {
 	return $elm$http$Http$get(
@@ -6504,7 +6504,7 @@ var $author$project$Updates$updatePage = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{dico: dictionary, json: $author$project$Utils$Success}),
+							{dico: dictionary, json_state: $author$project$Utils$Success}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var error = result.a;
@@ -6512,7 +6512,7 @@ var $author$project$Updates$updatePage = F2(
 						_Utils_update(
 							model,
 							{
-								json: $author$project$Utils$Failure(
+								json_state: $author$project$Utils$Failure(
 									$author$project$Utils$toString(error))
 							}),
 						$elm$core$Platform$Cmd$none);
@@ -6526,7 +6526,7 @@ var $author$project$Updates$updatePage = F2(
 							model,
 							{
 								all_the_words: A2($elm$core$String$split, ' ', words_txt),
-								http: $author$project$Utils$Success
+								http_state: $author$project$Utils$Success
 							}),
 						A2(
 							$elm$random$Random$generate,
@@ -6538,17 +6538,17 @@ var $author$project$Updates$updatePage = F2(
 						_Utils_update(
 							model,
 							{
-								http: $author$project$Utils$Failure(
+								http_state: $author$project$Utils$Failure(
 									$author$project$Utils$toString(error))
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
 			case 'Change':
-				var newContent = msg.a;
+				var newUser_input = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{content: newContent}),
+						{user_input: newUser_input}),
 					$elm$core$Platform$Cmd$none);
 			case 'Word_number':
 				var index = msg.a;
@@ -6577,8 +6577,8 @@ var $author$project$Updates$updatePage = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{http: $author$project$Utils$Loading}),
-					$author$project$Utils$getHttp);
+						{http_state: $author$project$Utils$Loading}),
+					$author$project$Utils$getWord);
 		}
 	});
 var $author$project$HomePage$update = F2(
@@ -6598,13 +6598,8 @@ var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Utils$overlay = F2(
-	function (model, txt) {
-		return A2($elm$html$Html$div, _List_Nil, txt);
-	});
 var $elm$html$Html$li = _VirtualDom_node('li');
-var $elm$html$Html$ol = _VirtualDom_node('ol');
-var $author$project$Utils$textDef = function (def) {
+var $author$project$Utils$afficheDefinition = function (def) {
 	if (!def.b) {
 		return _List_Nil;
 	} else {
@@ -6621,10 +6616,11 @@ var $author$project$Utils$textDef = function (def) {
 							$elm$html$Html$text(wordToFind.definition)
 						]))
 				]),
-			$author$project$Utils$textDef(xs));
+			$author$project$Utils$afficheDefinition(xs));
 	}
 };
-var $author$project$Utils$textWordMeaning = function (meanings) {
+var $elm$html$Html$ol = _VirtualDom_node('ol');
+var $author$project$Utils$afficheWordMeaning = function (meanings) {
 	if (!meanings.b) {
 		return _List_Nil;
 	} else {
@@ -6647,18 +6643,18 @@ var $author$project$Utils$textWordMeaning = function (meanings) {
 						A2(
 						$elm$html$Html$ol,
 						_List_Nil,
-						$author$project$Utils$textDef(wordToFind.definitions))
+						$author$project$Utils$afficheDefinition(wordToFind.definitions))
 					]),
-				$author$project$Utils$textWordMeaning(xs)));
+				$author$project$Utils$afficheWordMeaning(xs)));
 	}
 };
 var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$Utils$textDatas = function (datas) {
-	if (!datas.b) {
+var $author$project$Utils$afficheDico = function (dico) {
+	if (!dico.b) {
 		return _List_Nil;
 	} else {
-		var wordToFind = datas.a;
-		var xs = datas.b;
+		var wordToFind = dico.a;
+		var xs = dico.b;
 		return _Utils_ap(
 			_List_fromArray(
 				[
@@ -6675,14 +6671,18 @@ var $author$project$Utils$textDatas = function (datas) {
 								A2(
 								$elm$html$Html$ul,
 								_List_Nil,
-								$author$project$Utils$textWordMeaning(wordToFind.meanings))
+								$author$project$Utils$afficheWordMeaning(wordToFind.meanings))
 							])))
 				]),
-			$author$project$Utils$textDatas(xs));
+			$author$project$Utils$afficheDico(xs));
 	}
 };
+var $author$project$Utils$overlay = F2(
+	function (model, txt) {
+		return A2($elm$html$Html$div, _List_Nil, txt);
+	});
 var $author$project$View$viewDefinition = function (model) {
-	var _v0 = model.http;
+	var _v0 = model.http_state;
 	switch (_v0.$) {
 		case 'Failure':
 			var error = _v0.a;
@@ -6694,10 +6694,10 @@ var $author$project$View$viewDefinition = function (model) {
 				$author$project$Utils$overlay,
 				model,
 				function () {
-					var _v1 = model.json;
+					var _v1 = model.json_state;
 					switch (_v1.$) {
 						case 'Success':
-							return $author$project$Utils$textDatas(model.dico);
+							return $author$project$Utils$afficheDico(model.dico);
 						case 'Loading':
 							return _List_fromArray(
 								[
@@ -7108,7 +7108,7 @@ var $author$project$View$game_body = function (model) {
 					[
 						$elm$html$Html$text('\n ')
 					])),
-				_Utils_eq(model.content, model.mot_cherche) ? A2(
+				_Utils_eq(model.user_input, model.mot_cherche) ? A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
@@ -7145,7 +7145,7 @@ var $author$project$View$game_body = function (model) {
 										$elm$html$Html$text('BRAVO !! c\'est bien ça')
 									]))
 							]))
-					])) : ((model.content === '') ? A2(
+					])) : ((model.user_input === '') ? A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[

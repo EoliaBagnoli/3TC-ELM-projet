@@ -10,18 +10,18 @@ updatePage msg model =
         GotDictionary result ->
             case result of
                 Ok dictionary ->
-                    ({ model | json = Utils.Success, dico = dictionary} , Cmd.none)
+                    ({ model | json_state = Utils.Success, dico = dictionary} , Cmd.none)
                 Err error ->
-                    ({model | json = Utils.Failure (Utils.toString error)}, Cmd.none)
+                    ({model | json_state = Utils.Failure (Utils.toString error)}, Cmd.none)
         GotHttp result ->
             case result of 
                 Ok words_txt ->
-                    ({model | http = Utils.Success ,  all_the_words = String.split " " words_txt  }, Random.generate Word_number (Random.int 1 1000))
+                    ({model | http_state = Utils.Success ,  all_the_words = String.split " " words_txt  }, Random.generate Word_number (Random.int 1 1000))
                 Err error ->
-                    ({model | http = Utils.Failure (Utils.toString error)}, Cmd.none)
+                    ({model | http_state = Utils.Failure (Utils.toString error)}, Cmd.none)
 
-        Change newContent ->
-            ({ model | content = newContent }, Cmd.none)
+        Change newUser_input ->
+            ({ model | user_input = newUser_input }, Cmd.none)
 
         Word_number index -> 
             case (Utils.getElementAtIndex model.all_the_words index) of
@@ -37,5 +37,5 @@ updatePage msg model =
                 ({model | show_answer = False}, Cmd.none)
 
         Abandon ->
-            ({model | http = Loading }, getHttp)
+            ({model | http_state = Loading }, getWord)
 
