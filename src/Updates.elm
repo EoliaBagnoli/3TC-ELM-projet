@@ -10,13 +10,13 @@ updatePage msg model =
         GotDictionary result ->
             case result of
                 Ok dictionary ->
-                    ({ model | json = Utils.Success "", dico = dictionary} , Cmd.none)
+                    ({ model | json = Utils.Success, dico = dictionary} , Cmd.none)
                 Err error ->
                     ({model | json = Utils.Failure (Utils.toString error)}, Cmd.none)
         GotHttp result ->
             case result of 
                 Ok words_txt ->
-                    ({model | http = Utils.Success "",  all_the_words = String.split " " words_txt  }, Random.generate Word_number (Random.int 1 1000))
+                    ({model | http = Utils.Success ,  all_the_words = String.split " " words_txt  }, Random.generate Word_number (Random.int 1 1000))
                 Err error ->
                     ({model | http = Utils.Failure (Utils.toString error)}, Cmd.none)
 

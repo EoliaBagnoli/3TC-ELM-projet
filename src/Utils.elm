@@ -5,7 +5,7 @@ import Http
 import Json.Decode exposing (..)
 
 
-type State = Failure String | Loading | Success String 
+type State = Failure String | Loading | Success
 
 type alias Model = 
     {

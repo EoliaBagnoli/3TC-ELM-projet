@@ -1,10 +1,7 @@
 module HomePage exposing (..)
 
--- modules génériques
 import Browser
 import Html exposing (..)
-
--- modules personnalisés
 import Utils exposing (..)
 import View exposing (..)
 import Updates exposing (..)

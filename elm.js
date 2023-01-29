@@ -6222,9 +6222,7 @@ var $author$project$HomePage$subscriptions = function (model) {
 var $author$project$Utils$Failure = function (a) {
 	return {$: 'Failure', a: a};
 };
-var $author$project$Utils$Success = function (a) {
-	return {$: 'Success', a: a};
-};
+var $author$project$Utils$Success = {$: 'Success'};
 var $author$project$Utils$Word_number = function (a) {
 	return {$: 'Word_number', a: a};
 };
@@ -6506,10 +6504,7 @@ var $author$project$Updates$updatePage = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{
-								dico: dictionary,
-								json: $author$project$Utils$Success('')
-							}),
+							{dico: dictionary, json: $author$project$Utils$Success}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var error = result.a;
@@ -6531,7 +6526,7 @@ var $author$project$Updates$updatePage = F2(
 							model,
 							{
 								all_the_words: A2($elm$core$String$split, ' ', words_txt),
-								http: $author$project$Utils$Success('')
+								http: $author$project$Utils$Success
 							}),
 						A2(
 							$elm$random$Random$generate,
@@ -6575,10 +6570,6 @@ var $author$project$HomePage$update = F2(
 		return A2($author$project$Updates$updatePage, msg, model);
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $author$project$Utils$Change = function (a) {
-	return {$: 'Change', a: a};
-};
-var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -6588,99 +6579,9 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $elm$html$Html$p = _VirtualDom_node('p');
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$View$footer = A2(
-	$elm$html$Html$div,
-	_List_fromArray(
-		[
-			$elm$html$Html$Attributes$class('footer')
-		]),
-	_List_fromArray(
-		[
-			A2(
-			$elm$html$Html$p,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Toutes les définitions sont tirées du site :')
-				])),
-			A2(
-			$elm$html$Html$a,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text('https://dictionaryapi.dev/')
-				]))
-		]));
-var $elm$html$Html$form = _VirtualDom_node('form');
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $elm$html$Html$strong = _VirtualDom_node('strong');
-var $author$project$View$header = A2(
-	$elm$html$Html$div,
-	_List_fromArray(
-		[
-			$elm$html$Html$Attributes$class('top_banner')
-		]),
-	_List_fromArray(
-		[
-			A2(
-			$elm$html$Html$h1,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Bienvenue à devine-mot !')
-				])),
-			A2(
-			$elm$html$Html$p,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Le but du jeu est de deviner le mot dont la définition est donnée ci-dessous. ')
-				])),
-			A2(
-			$elm$html$Html$strong,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Bonne Chance !')
-				]))
-		]));
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $author$project$Utils$overlay = F2(
 	function (model, txt) {
 		return A2($elm$html$Html$div, _List_Nil, txt);
@@ -6764,7 +6665,7 @@ var $author$project$Utils$textDatas = function (datas) {
 			$author$project$Utils$textDatas(xs));
 	}
 };
-var $author$project$View$viewWord = function (model) {
+var $author$project$View$viewDefinition = function (model) {
 	var _v0 = model.http;
 	switch (_v0.$) {
 		case 'Failure':
@@ -6773,7 +6674,6 @@ var $author$project$View$viewWord = function (model) {
 		case 'Loading':
 			return $elm$html$Html$text('Fetching the http datas...');
 		default:
-			var good = _v0.a;
 			return A2(
 				$author$project$Utils$overlay,
 				model,
@@ -6781,7 +6681,6 @@ var $author$project$View$viewWord = function (model) {
 					var _v1 = model.json;
 					switch (_v1.$) {
 						case 'Success':
-							var veryGood = _v1.a;
 							return $author$project$Utils$textDatas(model.dico);
 						case 'Loading':
 							return _List_fromArray(
@@ -6798,28 +6697,98 @@ var $author$project$View$viewWord = function (model) {
 				}());
 	}
 };
-var $author$project$View$viewPage = function (model) {
+var $author$project$View$definition = function (model) {
 	return A2(
-		$elm$html$Html$form,
-		_List_Nil,
+		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$author$project$View$header,
+				$elm$html$Html$Attributes$class('definition')
+			]),
+		_List_fromArray(
+			[
 				A2(
-				$elm$html$Html$div,
+				$elm$html$Html$h1,
 				_List_Nil,
 				_List_fromArray(
 					[
-						A2(
-						$elm$html$Html$h1,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								$author$project$Utils$urlDef(model))
-							])),
-						$author$project$View$viewWord(model)
+						$elm$html$Html$text(
+						$author$project$Utils$urlDef(model))
 					])),
+				$author$project$View$viewDefinition(model)
+			]));
+};
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$p = _VirtualDom_node('p');
+var $author$project$View$footer = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('footer')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$p,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Toutes les définitions sont tirées du site :')
+				])),
+			A2(
+			$elm$html$Html$a,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('https://dictionaryapi.dev/')
+				]))
+		]));
+var $elm$html$Html$form = _VirtualDom_node('form');
+var $author$project$Utils$Change = function (a) {
+	return {$: 'Change', a: a};
+};
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $author$project$View$game_body = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('game_body')
+			]),
+		_List_fromArray(
+			[
 				A2(
 				$elm$html$Html$p,
 				_List_Nil,
@@ -6921,7 +6890,49 @@ var $author$project$View$viewPage = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text('\n ')
-					])),
+					]))
+			]));
+};
+var $elm$html$Html$strong = _VirtualDom_node('strong');
+var $author$project$View$header = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('top_banner')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$h1,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Bienvenue à devine-mot !')
+				])),
+			A2(
+			$elm$html$Html$p,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Le but du jeu est de deviner le mot dont la définition est donnée ci-dessous. ')
+				])),
+			A2(
+			$elm$html$Html$strong,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Bonne Chance !')
+				]))
+		]));
+var $author$project$View$viewPage = function (model) {
+	return A2(
+		$elm$html$Html$form,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$author$project$View$header,
+				$author$project$View$definition(model),
+				$author$project$View$game_body(model),
 				$author$project$View$footer
 			]));
 };
