@@ -43,25 +43,25 @@ definition model = div [class "definition"]
 
 game_body model = div [class "game_body"] [p [] [ text "\n "],
       if model.content == model.mot_cherche then 
-        div [style "text-align" "center"]
+        div [style "text-align" "center", style "padding" "20px"]
           [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
             p [] [ text "\n "]
           , div [] [ h1 [ ]  [text ("BRAVO !! c'est bien ça")]]
           ]
       else if model.content == "" then 
-        div [style "text-align" "center"]
+        div [style "text-align" "center", style "padding" "20px"]
           [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
         p [] [ text "\n "]
           , div [] [ text ("Veuillez insérer la réponse dans le champ ci-dessus")]
           ]
       else
-        div [style "text-align" "center"]
+        div [style "text-align" "center", style "padding" "20px"]
           [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
             p [] [ text "\n "]
           , div []  [text ("Ce n'est pas la bonne réponse")]
           ],
     p [] [ text "\n "],
-    div [style "text-align" "left"] [Button.checkboxButton model.show_answer [ Button.large, Button.outlinePrimary, Button.attrs[ onClick GetAnswer ]] [text " Voir la réponse" ], Button.button [ Button.large, Button.outlineSuccess, Button.attrs[ onClick Abandon ]] [text "Changer de mot" ]]]
+    div [style "text-align" "left", style "margin" "20px"] [Button.checkboxButton model.show_answer [  Button.outlinePrimary, Button.attrs[ onClick GetAnswer ]] [text " Voir la réponse" ], Button.button [Button.outlineSuccess, Button.attrs[ onClick Abandon ]] [text "Changer de mot" ]]]
 
 footer = div [ class "footer"]
         [

@@ -6386,7 +6386,7 @@ var $elm$http$Http$expectJson = F2(
 				}));
 	});
 var $author$project$Utils$urlDef = function (model) {
-	return 'https://api.dictionaryapi.dev/api/v2/entries/en/hello';
+	return 'https://api.dictionaryapi.dev/api/v2/entries/en/' + model.mot_cherche;
 };
 var $author$project$Utils$getDictionary = function (model) {
 	return $elm$http$Http$get(
@@ -7038,11 +7038,6 @@ var $rundis$elm_bootstrap$Bootstrap$Button$checkboxButton = F3(
 					_List_Nil),
 				children));
 	});
-var $rundis$elm_bootstrap$Bootstrap$General$Internal$LG = {$: 'LG'};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Size = function (a) {
-	return {$: 'Size', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Button$large = $rundis$elm_bootstrap$Bootstrap$Internal$Button$Size($rundis$elm_bootstrap$Bootstrap$General$Internal$LG);
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -7117,7 +7112,8 @@ var $author$project$View$game_body = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'padding', '20px')
 					]),
 				_List_fromArray(
 					[
@@ -7153,7 +7149,8 @@ var $author$project$View$game_body = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'padding', '20px')
 					]),
 				_List_fromArray(
 					[
@@ -7183,7 +7180,8 @@ var $author$project$View$game_body = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center'),
+						A2($elm$html$Html$Attributes$style, 'padding', '20px')
 					]),
 				_List_fromArray(
 					[
@@ -7221,7 +7219,8 @@ var $author$project$View$game_body = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'text-align', 'left')
+						A2($elm$html$Html$Attributes$style, 'text-align', 'left'),
+						A2($elm$html$Html$Attributes$style, 'margin', '20px')
 					]),
 				_List_fromArray(
 					[
@@ -7230,7 +7229,6 @@ var $author$project$View$game_body = function (model) {
 						model.show_answer,
 						_List_fromArray(
 							[
-								$rundis$elm_bootstrap$Bootstrap$Button$large,
 								$rundis$elm_bootstrap$Bootstrap$Button$outlinePrimary,
 								$rundis$elm_bootstrap$Bootstrap$Button$attrs(
 								_List_fromArray(
@@ -7246,7 +7244,6 @@ var $author$project$View$game_body = function (model) {
 						$rundis$elm_bootstrap$Bootstrap$Button$button,
 						_List_fromArray(
 							[
-								$rundis$elm_bootstrap$Bootstrap$Button$large,
 								$rundis$elm_bootstrap$Bootstrap$Button$outlineSuccess,
 								$rundis$elm_bootstrap$Bootstrap$Button$attrs(
 								_List_fromArray(

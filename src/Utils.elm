@@ -72,7 +72,7 @@ getDictionary model =
       }
 
 urlDef : Model -> String
-urlDef model = ("https://api.dictionaryapi.dev/api/v2/entries/en/hello")
+urlDef model = ("https://api.dictionaryapi.dev/api/v2/entries/en/" ++ model.mot_cherche)
 
 
 getHttp : Cmd Msg
