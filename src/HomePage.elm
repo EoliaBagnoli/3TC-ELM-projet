@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Decode exposing (..)
+import Random
 
 
 
@@ -18,7 +19,7 @@ main = Browser.element { init = init, update = update, subscriptions = subscript
 
 -- MODEL 
 
-type State = Failure | Loading | Success String 
+type State = Failure String | Loading | Success String 
 
 type alias Model = 
     {
@@ -26,6 +27,8 @@ type alias Model =
         ,json : State 
         ,dico : Dictionary
         ,content : String
+        ,mot_cherche : String
+        ,all_the_words : List String
     }
 
 type alias Dictionary = List Context
@@ -51,14 +54,14 @@ type alias Definition =
 init : () -> (Model, Cmd Msg)
 init _ =
   (
-   Model Loading Loading [] "",
+   Model Loading Loading [] "" "" [],
    getHttp
   )
 
 
 -- UPDATE 
 
-type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) 
+type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) | Word_number Int
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
@@ -67,16 +70,24 @@ update msg model =
             case result of
                 Ok dictionary ->
                     ({ model | json = Success "", dico = dictionary} , Cmd.none)
-                Err _ ->
-                    ({model | json = Failure}, Cmd.none)
+                Err error ->
+                    ({model | json = Failure (toString error)}, Cmd.none)
         GotHttp result ->
             case result of 
-                Ok hello ->
-                    ({model | http = Success hello}, getDictionary)
-                Err _ ->
-                    ({model | http = Failure}, Cmd.none)
+                Ok words_txt ->
+                    ({model | http = Success "",  all_the_words = String.split " " words_txt  }, Random.generate Word_number (Random.int 1 1000))
+                Err error ->
+                    ({model | http = Failure (toString error)}, Cmd.none)
+
         Change newContent ->
             ({ model | content = newContent }, Cmd.none)
+
+        Word_number index -> 
+            case (getElementAtIndex model.all_the_words index) of
+                  Nothing -> 
+                      (model, Cmd.none)
+                  Just word_at_index -> 
+                      ({ model | mot_cherche = word_at_index}, getDictionary model)
 
 
 subscriptions : Model -> Sub Msg
@@ -88,12 +99,12 @@ view model = Html.form []
     [ header,
 
     div []
-    [ h1 [] [ text "Here is the definition :" ]
+    [ h1 [] [ text (urlDef model)]
     , viewWord model
     ], 
 
     p [] [ text "\n "],
-      if model.content == "hello" then 
+      if model.content == model.mot_cherche then 
         div []
           [ input [ placeholder "Insérez la réponse",  onInput Change ] [],
             p [] [ text "\n "]
@@ -118,13 +129,13 @@ view model = Html.form []
 viewWord : Model -> Html Msg
 viewWord model =
   case model.http of
-    Failure -> text ("Error while loading the words :'/")
+    Failure error -> text ("Error while loading the words : "  ++ error)
     Loading -> text "Fetching the http datas..."
     Success good -> overlay model (
       case model.json of
         Success veryGood -> textDatas model.dico
         Loading -> [text "Fetching the json datas..."]
-        Failure -> [text ("Error while loading the words :'/")] )
+        Failure error -> [text ("Error while loading the defintion : "  ++ error)] )
             
 header = div [ class "top_banner" ]
         [ h1 [] [ text "Bienvenue à devine-mot !" ]
@@ -155,17 +166,38 @@ footer = div [ class "footer"]
         ] 
 
 
-getDictionary : Cmd Msg
-getDictionary =
+toString : Http.Error -> String 
+toString erreur = 
+  case erreur of 
+    Http.BadUrl err -> "BadUrl" ++ err
+    Http.Timeout -> "Timeout"
+    Http.NetworkError -> "NetworkError"
+    Http.BadStatus err -> "BadStatus" ++ String.fromInt err
+    Http.BadBody err -> "BadBody" ++ err
+
+getElementAtIndex : List a -> Int -> Maybe a
+getElementAtIndex list index =
+    if index < 0 || index >= List.length list then
+        Nothing
+    else
+        List.head (List.drop index list)
+
+
+getDictionary : Model -> Cmd Msg
+getDictionary model =
     Http.get
-      { url = "https://api.dictionaryapi.dev/api/v2/entries/en/hello"
+      { url = urlDef model
       , expect = Http.expectJson GotDictionary dictionaryDecoder
       }
+
+urlDef : Model -> String
+urlDef model = ("https://api.dictionaryapi.dev/api/v2/entries/en/hello")
+
 
 getHttp : Cmd Msg
 getHttp =
     Http.get
-      { url = "https://api.dictionaryapi.dev/api/v2/entries/en/hello"
+      { url = "http://localhost:5016/words.txt"
       , expect = Http.expectString GotHttp
       }
 
