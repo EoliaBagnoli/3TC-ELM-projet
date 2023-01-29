@@ -1,12 +1,10 @@
 module HomePage exposing (..)
 
+-- modules génériques
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Http
-import Json.Decode exposing (..)
-import Random
+
+-- modules personnalisés
 import Utils exposing (..)
 import View exposing (..)
 import Updates exposing (..)
@@ -20,10 +18,13 @@ main = Browser.element { init = init, update = update, subscriptions = subscript
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = Updates.updatePage msg model
 
+-- SUBSCRIPTIONS 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
+
+-- VIEW 
 
 view : Model -> Html Msg
 view model = div [] [View.viewPage model]
