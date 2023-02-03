@@ -37,7 +37,8 @@ definition model = div [class "definition"]
       if model.show_answer == True then 
         div [] [h1 [] [ text model.mot_cherche]]
       else 
-        div [] [h1 [] [ text "Voici le mot à trouver : "]]
+        div [] [h1 [] [ text "Voici la définition à trouver :"]]
+
     , viewDefinition model
     ]
 

@@ -6211,7 +6211,7 @@ var $author$project$Utils$getWord = $elm$http$Http$get(
 	});
 var $author$project$Utils$init = function (_v0) {
 	return _Utils_Tuple2(
-		A7($author$project$Utils$Model, $author$project$Utils$Loading, $author$project$Utils$Loading, _List_Nil, '', '', _List_Nil, false),
+		A7($author$project$Utils$Model, $author$project$Utils$Loading, $author$project$Utils$Loading, _List_Nil, '', 'hello', _List_Nil, false),
 		$author$project$Utils$getWord);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6222,6 +6222,7 @@ var $author$project$HomePage$subscriptions = function (model) {
 var $author$project$Utils$Failure = function (a) {
 	return {$: 'Failure', a: a};
 };
+var $author$project$Utils$Mot_attrape = {$: 'Mot_attrape'};
 var $author$project$Utils$Success = {$: 'Success'};
 var $author$project$Utils$Word_number = function (a) {
 	return {$: 'Word_number', a: a};
@@ -6386,7 +6387,7 @@ var $elm$http$Http$expectJson = F2(
 				}));
 	});
 var $author$project$Utils$urlDef = function (model) {
-	return 'https://api.dictionaryapi.dev/api/v2/entries/en/hello';
+	return 'https://api.dictionaryapi.dev/api/v2/entries/en/' + model.mot_cherche;
 };
 var $author$project$Utils$getDictionary = function (model) {
 	return $elm$http$Http$get(
@@ -6477,6 +6478,15 @@ var $elm$random$Random$int = F2(
 	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $GlobalWebIndex$cmd_extra$Cmd$Extra$perform = A2(
+	$elm$core$Basics$composeL,
+	$elm$core$Task$perform($elm$core$Basics$identity),
+	$elm$core$Task$succeed);
 var $author$project$Utils$toString = function (erreur) {
 	switch (erreur.$) {
 		case 'BadUrl':
@@ -6561,8 +6571,12 @@ var $author$project$Updates$updatePage = F2(
 						_Utils_update(
 							model,
 							{mot_cherche: word_at_index}),
-						$author$project$Utils$getDictionary(model));
+						$GlobalWebIndex$cmd_extra$Cmd$Extra$perform($author$project$Utils$Mot_attrape));
 				}
+			case 'Mot_attrape':
+				return _Utils_Tuple2(
+					model,
+					$author$project$Utils$getDictionary(model));
 			case 'GetAnswer':
 				return (!model.show_answer) ? _Utils_Tuple2(
 					_Utils_update(
@@ -6744,7 +6758,7 @@ var $author$project$View$definition = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Voici le mot à trouver : ')
+								$elm$html$Html$text('Voici la définition à trouver :')
 							]))
 					])),
 				$author$project$View$viewDefinition(model)

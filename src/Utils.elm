@@ -41,11 +41,11 @@ type alias Definition =
 init : () -> (Model, Cmd Msg)
 init _ =
   (
-   Model Loading Loading [] "" "" [] False,
+   Model Loading Loading [] "" "hello" [] False,
    getWord
   )
 
-type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) | Word_number Int | GetAnswer | Abandon
+type Msg = Change String | GotDictionary (Result Http.Error Dictionary) | GotHttp (Result Http.Error String) | Word_number Int | GetAnswer | Abandon | Mot_attrape
 
 toString : Http.Error -> String 
 toString erreur = 
@@ -72,7 +72,7 @@ getDictionary model =
       }
 
 urlDef : Model -> String
-urlDef model = ("https://api.dictionaryapi.dev/api/v2/entries/en/hello")
+urlDef model = "https://api.dictionaryapi.dev/api/v2/entries/en/"++model.mot_cherche
 
 
 getWord : Cmd Msg

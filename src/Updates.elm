@@ -2,6 +2,7 @@ module Updates exposing (..)
 
 import Random
 import Utils exposing (..)
+import Cmd.Extra exposing(..)
 
 
 updatePage : Msg -> Model -> (Model, Cmd Msg)
@@ -28,7 +29,10 @@ updatePage msg model =
                   Nothing -> 
                       (model, Cmd.none)
                   Just word_at_index -> 
-                      ({ model | mot_cherche = word_at_index}, Utils.getDictionary model)
+                      ({ model | mot_cherche = word_at_index}, Cmd.Extra.perform Mot_attrape)
+
+        Mot_attrape -> 
+            (model , getDictionary model)
 
         GetAnswer ->
             if model.show_answer == False then 
