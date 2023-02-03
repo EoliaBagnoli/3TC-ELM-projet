@@ -1,6 +1,7 @@
 # 3TC-ELM-projet
 
-**## JEU DU DEVINE MOT :**
+## **JEU DU DEVINE MOT :**
+
 _BAGNOLI Eolia_
 
 The goal of the game is to guess a word given its definition. Enjoy !
